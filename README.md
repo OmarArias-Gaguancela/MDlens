@@ -30,6 +30,7 @@ Represents **one protein–ligand system**. Accepts one topology and one or more
 - Load each replicate as a separate `mda.Universe`
 - Compute all metrics per replicate, then average across replicates with standard deviation (error bands)
 - Handle unequal replicate lengths via linear interpolation before averaging
+- Build the time axis from `total_time_ns` (reliable) rather than trajectory headers, which are unreliable for DCD/CHARMM files
 - Store results internally so `MDComparator` can request them on demand
 
 ### `MDComparator`
@@ -69,7 +70,7 @@ complex_a = MDComplex(
     trajectories=["rep1.dcd", "rep2.dcd", "rep3.dcd"],
     protein_selection="protein",
     ligand_selection="resname LIG",
-    dt_in_ps=None,       # reads timestep from trajectory; override if needed
+    total_time_ns=100.0,  # total simulation time in ns (e.g. 100 for a 100 ns run)
     resid_offset=0,
 )
 
@@ -80,6 +81,7 @@ complex_b = MDComplex(
     trajectories="single.dcd",    # string accepted for single replicate
     protein_selection="protein",
     ligand_selection="resname LIG",
+    total_time_ns=100.0,
 )
 
 # Compute all metrics
